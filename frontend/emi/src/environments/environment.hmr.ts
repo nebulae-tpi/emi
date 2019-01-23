@@ -3,7 +3,7 @@ export const environment = {
     "hmr"       : true,
     "keycloak": {
         "url": "http://127.0.0.1:8080/auth",
-        "realm": "DEV_TPM",
+        "realm": "DEV_TPI",
         "clientId": "EMI",
         "onLoad": "login-required",
         "checkLoginIframe": false,

@@ -2,8 +2,8 @@ export const environment = {
     "production": true,
     "hmr"       : false,
     "keycloak": {
-        "url": "https://qa-tpm.nebulae.com.co/auth",
-        "realm": "QA_TPM",
+        "url": "https://tpi-qa.nebulae.com.co/auth",
+        "realm": "QA_TPI",
         "clientId": "EMI",
         "onLoad": "login-required",
         "checkLoginIframe": false,
@@ -14,9 +14,9 @@ export const environment = {
     "api": {
         "gateway": {
             "graphql": {
-                "httpEndPoint": "https://qa-iot.nebulae.com.co/api/emi-gateway/graphql/http",
-                "wsEndPoint": "wss://qa-iot.nebulae.com.co/api/emi-gateway/graphql/ws",
-                "graphiqlEndPoint": "https://qa-iot.nebulae.com.co/api/emi-gateway/graphiql"
+                "httpEndPoint": "https://tpi-qa.nebulae.com.co/api/emi-gateway/graphql/http",
+                "wsEndPoint": "wss://tpi-qa.nebulae.com.co/api/emi-gateway/graphql/ws",
+                "graphiqlEndPoint": "https://tpi-qa.nebulae.com.co/api/emi-gateway/graphiql"
             }
         }
     }

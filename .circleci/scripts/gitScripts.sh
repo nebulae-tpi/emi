@@ -35,7 +35,7 @@ gitPackageLockChanged(){
 #   github user email
 #   github user name
 #   github user token
-#   github repo path eg: nebulae-tpm/emi
+#   github repo path eg: nebulae-tpi/emi
 #   github repo branch eg: master
 gitCommitPush_package-lock(){ 
     echo "gitCommitPush_package" 
