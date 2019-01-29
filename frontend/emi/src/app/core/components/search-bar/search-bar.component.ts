@@ -49,42 +49,34 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
     this.userRoles = this.keycloakService.getUserRoles(true);
     of(this.keycloakService.getUserRoles(true).includes('PLATFORM-ADMIN'))
       .pipe(
-        tap(ispa => console.log('IS PLATFORM ADMIN ==> ', ispa)),
+        // tap(ispa => console.log('IS PLATFORM ADMIN ==> ', ispa)),
         delay(500),
         mergeMap((isSysAdmin: boolean) => isSysAdmin
           ? of({})
             .pipe(
               delay(50),
-              mapTo({
-                data: {
-                  myBusiness: {
-                    _id: this.ALL_BUSINESS_REF.id,
-                    generalInfo: {
-                      name: this.translationLoader.getTranslate().instant(this.ALL_BUSINESS_REF.name)
-                    }
-                  }
-                }
-              })
+              mergeMap(() => this.buildBusinessResponse$(
+                this.ALL_BUSINESS_REF.id,
+                this.translationLoader.getTranslate().instant(this.ALL_BUSINESS_REF.name))
+              )
             )
           : this.searchBarService.getUserBusiness$()
             .pipe(
+              // tap(r => console.log('################ MY BUSINESS IS => ', r)),
               catchError(error => defer(() => this.keycloakService.loadUserProfile())
                 .pipe(
-                  map((userDetails: any) => ({
-                      data: {
-                        myBusiness: {
-                          _id: userDetails['attributes']['businessId'][0],
-                          generalInfo: {
-                            name: this.translationLoader.getTranslate().instant('TOOLBAR.MY_BUSINESS')
-                          }
-                        }
-                      }
-                    }
-                  ))
+                  // tap(ud => console.log(error, 'USER DETAILS ==> ', ud)),
+                  mergeMap((userDetails: any) =>
+                    this.buildBusinessResponse$(
+                      userDetails['attributes']['businessId'][0],
+                      this.translationLoader.getTranslate().instant('TOOLBAR.MY_BUSINESS')
+                    )
+                  )
                 ))
             )
         ),
         // filter(result => result && !result.erros),
+        // tap(r => console.log('FOUND BUSINESS =>', r) ),
         map(rawResponse => (rawResponse ? rawResponse.data.myBusiness : null)),
         filter(result => result !== null),
         map(response => ({
@@ -94,7 +86,7 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
         tap( bu => this.selectedBU = bu),
         map(bu => this.onBusinessSelected.next(bu))
       )
-      .subscribe(r => console.log('##################', this.selectedBU), e => console.log(e), () => {});
+      .subscribe(r => {}, e => console.log(e), () => {});
 
     this.businessQueryFiltered$ = fromEvent(this.inputFilter.nativeElement, 'keyup')
       .pipe(
@@ -105,7 +97,7 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
         catchError(error => defer(() => this.keycloakService.loadUserProfile())
           .pipe(
             map((userDetails: any) => ([{
-              id: userDetails['attributes']['businessId'][0],
+              id: userDetails['attributes']['businessId'] ?  userDetails['attributes']['businessId'][0] : null,
               name: this.translationLoader.getTranslate().instant('TOOLBAR.MY_BUSINESS')
             }]))
           ))
@@ -115,6 +107,17 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+  }
+
+  buildBusinessResponse$(id, name){
+    return of({
+      data: {
+        myBusiness: {
+          _id: id,
+          generalInfo: { name: name }
+        }
+      }
+    });
   }
 
   collapse() {
