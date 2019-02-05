@@ -65,7 +65,7 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
               tap(r => console.log('################ MY BUSINESS IS => ', r)),
               catchError(error => defer(() => this.keycloakService.loadUserProfile())
                 .pipe(
-                  // tap(ud => console.log(error, 'USER DETAILS ==> ', ud)),
+                  tap(ud => console.log(error, 'USER DETAILS ==> ', ud)),
                   mergeMap((userDetails: any) =>
                     this.buildBusinessResponse$(
                       userDetails['attributes']['businessId'][0],
