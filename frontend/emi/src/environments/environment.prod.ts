@@ -2,7 +2,7 @@ export const environment = {
     "production": true,
     "hmr": false,
     "keycloak": {
-        "url": "https://tpi-dev.nebulae.com.co/auth",
+        "url": "https://tpi.nebulae.com.co/auth",
         "realm": "TPI",
         "clientId": "EMI",
         "onLoad": "login-required",
@@ -14,9 +14,9 @@ export const environment = {
     "api": {
         "gateway": {
             "graphql": {
-                "httpEndPoint": "https://tpi-dev.nebulae.com.co/api/emi-gateway/graphql/http",
-                "wsEndPoint": "wss://tpi-dev.nebulae.com.co/api/emi-gateway/graphql/ws",
-                "graphiqlEndPoint": "https://tpi-dev.nebulae.com.co/api/emi-gateway/graphiql"
+                "httpEndPoint": "https://tpi.nebulae.com.co/api/emi-gateway/graphql/http",
+                "wsEndPoint": "wss://tpi.nebulae.com.co/api/emi-gateway/graphql/ws",
+                "graphiqlEndPoint": "https://tpi.nebulae.com.co/api/emi-gateway/graphiql"
             }
         }
     }
