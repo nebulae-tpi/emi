@@ -77,37 +77,13 @@ workflows:
   version: 2.1
   build-and-deploy:
     jobs:
-      #- hold-dev: 
-      #    type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
-      - build-frontend:
-          context: TPI
-          name: build-frontend-dev
-          #requires:
-          #  - hold-dev
-      - build-docker:
-          context: TPI
-          name: build-docker-dev
-          requires:
-            - build-frontend-dev
-      - deploy-dev:
-          context: TPI
-          name: deploy-dev-dev
-          requires:
-            - build-docker-dev
-      - hold-prod: 
-          type: approval
       - build-frontend:
           context: TPI_PROD
-          name: build-frontend-prod
-          requires:
-            - hold-prod
       - build-docker:
           context: TPI_PROD
-          name: build-docker-prod
           requires:
-            - build-frontend-prod
+            - build-frontend
       - deploy-dev:
           context: TPI_PROD
-          name: deploy-dev-prod
           requires:
-            - build-docker-prod
+            - build-docker
