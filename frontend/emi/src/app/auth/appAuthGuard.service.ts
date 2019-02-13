@@ -25,7 +25,7 @@ export class AppAuthGuard extends KeycloakAuthGuard {
                 this.keycloakAngular.login();
                 return;
             }
-            
+
             const requiredRoles = route.data.roles;
             if (!requiredRoles || requiredRoles.length === 0) {
                 return resolve(true);
@@ -39,6 +39,10 @@ export class AppAuthGuard extends KeycloakAuthGuard {
                         granted = true;
                         break;
                     }
+                }
+                if(!granted){
+                  this.router.navigate(["./profile"]);
+
                 }
                 resolve(granted);
             }
