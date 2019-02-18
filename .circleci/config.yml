@@ -80,6 +80,10 @@ workflows:
     jobs:
       - build-frontend:
           context: TPI
+          filters:
+            branches:
+              only:
+                - develop
       - build-docker:
           context: TPI
           requires:
