@@ -40,9 +40,8 @@ export class AppAuthGuard extends KeycloakAuthGuard {
                         break;
                     }
                 }
-                if(!granted){
-                  this.router.navigate(["./profile"]);
-
+                if (!granted){
+                  this.router.navigate(['./profile']);
                 }
                 resolve(granted);
             }

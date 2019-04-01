@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { GatewayService } from "../../../api/gateway.service";
-import { getMyBusiness, getBusinessList } from "./gql/toolbar.js";
+import { Injectable } from '@angular/core';
+import { GatewayService } from '../../../api/gateway.service';
+import { getMyBusiness, getBusinessList } from './gql/toolbar.js';
 
 @Injectable()
 export class SearchBarService {
@@ -14,16 +14,16 @@ export class SearchBarService {
         count: limit,
         filter: filterText
       },
-      fetchPolicy: "network-only",
-      errorPolicy: "all"
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all'
     });
   }
 
   getUserBusiness$() {
     return this.gateway.apollo.query<any>({
       query: getMyBusiness,
-      fetchPolicy: "network-only",
-      errorPolicy: "all"
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all'
     });
   }
 }
