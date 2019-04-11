@@ -114,7 +114,6 @@ export class FuseToolbarComponent {
 
 
   search(value) {
-    //console.log('Business selected ==> ', value);
     this.businessSelected = value;
     this.toolbarService.onSelectedBusiness$.next(value);
 
