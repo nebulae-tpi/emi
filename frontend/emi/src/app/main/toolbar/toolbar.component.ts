@@ -116,7 +116,6 @@ export class FuseToolbarComponent {
   search(value) {
     this.businessSelected = value;
     this.toolbarService.onSelectedBusiness$.next(value);
-
   }
 
   setLanguage(lang) {
