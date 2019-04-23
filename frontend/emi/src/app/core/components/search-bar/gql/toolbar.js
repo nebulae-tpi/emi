@@ -8,7 +8,10 @@ export const getBusinessList = gql`
     generalInfo{
       name
     }
-    attributes
+    attributes{
+      key
+      value
+    }
   }
 }
 `;
@@ -20,7 +23,10 @@ export const getMyBusiness = gql`
       generalInfo {
         name
       }
-      attributes
+      attributes{
+        key
+        value
+      }
     }
   }
 `;
