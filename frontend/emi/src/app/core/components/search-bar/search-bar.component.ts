@@ -28,7 +28,7 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
   userRoles: string[] = [];
   userDetails = {};
 
-  ALL_BUSINESS_REF = { id: null, name: 'TOOLBAR.ALL_BUSINESS_NAME'};
+  ALL_BUSINESS_REF = { id: null, name: 'TOOLBAR.ALL_BUSINESS_NAME', attributes: []};
 
   constructor(
     private fuseConfig: FuseConfigService,
@@ -57,7 +57,8 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
               delay(50),
               mergeMap(() => this.buildBusinessResponse$(
                 this.ALL_BUSINESS_REF.id,
-                this.translationLoader.getTranslate().instant(this.ALL_BUSINESS_REF.name))
+                this.translationLoader.getTranslate().instant(this.ALL_BUSINESS_REF.name)
+                )
               )
             )
           : this.searchBarService.getUserBusiness$()
@@ -81,7 +82,8 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
         filter(result => result !== null),
         map(response => ({
           id: response._id,
-          name: response.generalInfo.name
+          name: response.generalInfo.name,
+          attributes: response.attributes
         })),
         tap( bu => this.selectedBU = bu),
         map(bu => this.onBusinessSelected.next(bu))
@@ -98,7 +100,8 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
           .pipe(
             map((userDetails: any) => ([{
               id: userDetails['attributes']['businessId'] ?  userDetails['attributes']['businessId'][0] : null,
-              name: this.translationLoader.getTranslate().instant('TOOLBAR.MY_BUSINESS')
+              name: this.translationLoader.getTranslate().instant('TOOLBAR.MY_BUSINESS'),
+              attributes: []
             }]))
           ))
       );
@@ -114,7 +117,8 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
       data: {
         myBusiness: {
           _id: id,
-          generalInfo: { name: name }
+          generalInfo: { name: name },
+          attributes: []
         }
       }
     });
@@ -153,13 +157,14 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
         map(result => result.data.getBusinesses),
         mergeMap(results =>
           from(results).pipe(
-            map((bu: any) => ({ id: bu._id, name: bu.generalInfo.name })),
+            map((bu: any) => ({ id: bu._id, name: bu.generalInfo.name, attributes: bu.attributes })),
             toArray()
           )
         ),
         map(response => ([...response, {
           id: this.ALL_BUSINESS_REF.id,
-          name: this.translationLoader.getTranslate().instant(this.ALL_BUSINESS_REF.name)
+          name: this.translationLoader.getTranslate().instant(this.ALL_BUSINESS_REF.name),
+          attributes: []
         }])),
         takeUntil(this.ngUnsubscribe)
       );
