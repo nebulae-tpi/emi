@@ -19,5 +19,10 @@ export const environment = {
                 "graphiqlEndPoint": "https://tpi-dev.nebulae.com.co/api/emi-gateway/graphiql"
             }
         }
+    },
+    google: {
+      maps: {
+        key: 'AIzaSyByGMKwZIYXqcPONjNSX-KHJ9kbP5tBu5I'
+      }
     }
 };

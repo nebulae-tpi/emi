@@ -8,6 +8,7 @@ export const getBusinessList = gql`
     generalInfo{
       name
     }
+    attributes
   }
 }
 `;
@@ -19,6 +20,7 @@ export const getMyBusiness = gql`
       generalInfo {
         name
       }
+      attributes
     }
   }
 `;

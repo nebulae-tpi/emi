@@ -19,5 +19,10 @@ export const environment = {
             "graphiqlEndPoint": "http://localhost:3000/api/emi-gateway/graphiql"
           }
       }
+    },
+    google: {
+      maps: {
+        key: 'AIzaSyByGMKwZIYXqcPONjNSX-KHJ9kbP5tBu5I'
+      }
     }
 };
