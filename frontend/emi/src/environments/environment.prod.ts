@@ -20,9 +20,9 @@ export const environment = {
             }
         }
     },
-    google: {
-      maps: {
-        key: 'AIzaSyByGMKwZIYXqcPONjNSX-KHJ9kbP5tBu5I'
+    "google": {
+      "maps": {
+        "key": "AIzaSyByGMKwZIYXqcPONjNSX-KHJ9kbP5tBu5I"
       }
     }
 };
