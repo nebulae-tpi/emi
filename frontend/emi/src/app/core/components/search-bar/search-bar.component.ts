@@ -134,6 +134,7 @@ export class FuseSearchBarComponent implements OnInit, OnDestroy {
     }
   }
 
+
   // search(event) {
   //   const value = event.target.value;
   //   this.onInput.emit(value);
