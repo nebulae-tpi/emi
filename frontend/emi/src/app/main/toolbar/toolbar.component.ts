@@ -28,7 +28,7 @@ export class FuseToolbarComponent {
   showLoadingBar: boolean;
   horizontalNav: boolean;
   userRoles: string[] = [];
-  businessSelected: {id: string, name: string} = null;
+  businessSelected: {id: string, name: string, attributes:{key: string, value: string}[]} = null;
 
   constructor(
     private router: Router,
