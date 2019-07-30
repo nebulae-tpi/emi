@@ -22,7 +22,7 @@ export const environment = {
     },
     "google": {
       "maps": {
-        "key": "AIzaSyByGMKwZIYXqcPONjNSX-KHJ9kbP5tBu5I"
+        "key": "AIzaSyC1VkMKnBB_TATeaszTe_a8phyo-B8DSVg"
       }
     }
 };
