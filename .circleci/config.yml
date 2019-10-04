@@ -19,7 +19,7 @@ jobs:
             npm install -g @nebulae/cli
             npm install -g @angular/cli@7.2.1
             echo $CIRCLE_BRANCH
-            nebulae compose-ui production --shell-finalEnvFile=$FILE_ENV_FRONTEND --shell-type=FUSE2_ANGULAR --shell-repo-branch=$CIRCLE_BRANCH --shell-repo=https://github.com/nebulae-tpi/emi.git --frontend-id=$CIRCLE_PROJECT_REPONAME --output-dir=/tmp/nebulae/emi/ --store-type=GCP_DATASTORE --gcp-service-account-token=/tmp/gcloud-service-key.json                        
+            nebulae compose-ui production --shell-finalEnvFile=$FILE_ENV_FRONTEND --shell-type=FUSE2_ANGULAR --shell-repo=https://github.com/nebulae-tpi/emi.git --frontend-id=$CIRCLE_PROJECT_REPONAME --output-dir=/tmp/nebulae/emi/ --store-type=GCP_DATASTORE --gcp-service-account-token=/tmp/gcloud-service-key.json                        
             source /tmp/repo/.circleci/scripts/gitScripts.sh
             # commit & push package-lock.json changes after ng build
             cp /tmp/nebulae/emi/package-lock.json /tmp/repo/frontend/emi/package-lock.json
