@@ -8,6 +8,7 @@ export function keycloakInitializer(keycloak: KeycloakService): () => Promise<an
                 //console.log(environment);
                 await keycloak.init({
                     config: {
+
                         url: environment.keycloak.url,
                         realm: environment.keycloak.realm,
                         clientId: environment.keycloak.clientId
