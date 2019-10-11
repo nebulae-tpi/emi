@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: frontend-emi
-        image: DOCKERHUB/emi:1.1.1
+        image: DOCKERHUB/emi:1.1.2
         resources:
           requests:
             cpu: "10m"
