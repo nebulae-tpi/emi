@@ -8,272 +8,252 @@ import { NavigationEnd, Router } from '@angular/router';
 import { FuseNavigationService } from '../../../core/components/navigation/navigation.service';
 import { FusePerfectScrollbarDirective } from '../../../core/directives/fuse-perfect-scrollbar/fuse-perfect-scrollbar.directive';
 import { animate, AnimationBuilder, AnimationPlayer, style } from '@angular/animations';
+import { ToolbarService } from '../../toolbar/toolbar.service';
+import { debounceTime, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
-    selector     : 'fuse-navbar-vertical',
-    templateUrl  : './navbar-vertical.component.html',
-    styleUrls    : ['./navbar-vertical.component.scss'],
-    encapsulation: ViewEncapsulation.None
+  selector: 'fuse-navbar-vertical',
+  templateUrl: './navbar-vertical.component.html',
+  styleUrls: ['./navbar-vertical.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class FuseNavbarVerticalComponent implements OnInit, OnDestroy
-{
-    private _backdropElement: HTMLElement | null = null;
-    private _folded = false;
+export class FuseNavbarVerticalComponent implements OnInit, OnDestroy {
+  private _backdropElement: HTMLElement | null = null;
+  private _folded = false;
 
-    @HostBinding('class.close') isClosed: boolean;
-    @HostBinding('class.folded') isFoldedActive: boolean;
-    @HostBinding('class.folded-open') isFoldedOpen: boolean;
-    @HostBinding('class.initialized') initialized: boolean;
-    @ViewChild(FusePerfectScrollbarDirective) fusePerfectScrollbarDirective;
+  @HostBinding('class.close') isClosed: boolean;
+  @HostBinding('class.folded') isFoldedActive: boolean;
+  @HostBinding('class.folded-open') isFoldedOpen: boolean;
+  @HostBinding('class.initialized') initialized: boolean;
+  @ViewChild(FusePerfectScrollbarDirective) fusePerfectScrollbarDirective;
 
-    @Input()
-    set folded(value: boolean)
-    {
-        this._folded = value;
+  @Input()
+  set folded(value: boolean) {
+    this._folded = value;
 
-        if ( this._folded )
-        {
-            this.activateFolded();
-        }
-        else
-        {
-            this.deActivateFolded();
-        }
+    if (this._folded) {
+      this.activateFolded();
     }
-
-    get folded(): boolean
-    {
-        return this._folded;
+    else {
+      this.deActivateFolded();
     }
+  }
 
-    matchMediaWatcher: Subscription;
-    navigationServiceWatcher: Subscription;
-    fusePerfectScrollbarUpdateTimeout;
+  get folded(): boolean {
+    return this._folded;
+  }
 
-    player: AnimationPlayer;
+  matchMediaWatcher: Subscription;
+  navigationServiceWatcher: Subscription;
+  fusePerfectScrollbarUpdateTimeout;
+  selectedBusinessIcon = './assets/images/logos/logo-trik.png';
 
-    constructor(
-        private fuseMainComponent: FuseMainComponent,
-        private fuseMatchMedia: FuseMatchMedia,
-        private fuseNavigationService: FuseNavigationService,
-        private navBarService: FuseNavbarVerticalService,
-        private router: Router,
-        private _renderer: Renderer2,
-        private _elementRef: ElementRef,
-        private animationBuilder: AnimationBuilder,
-        public media: ObservableMedia
-    )
-    {
-        navBarService.setNavBar(this);
+  player: AnimationPlayer;
+  private ngUnsubscribe = new Subject();
 
-        this.navigationServiceWatcher =
-            this.fuseNavigationService.onNavCollapseToggle.subscribe(() => {
-                this.fusePerfectScrollbarUpdateTimeout = setTimeout(() => {
-                    this.fusePerfectScrollbarDirective.update();
-                }, 310);
-            });
+  constructor(
+    private fuseMainComponent: FuseMainComponent,
+    private fuseMatchMedia: FuseMatchMedia,
+    private fuseNavigationService: FuseNavigationService,
+    private navBarService: FuseNavbarVerticalService,
+    private router: Router,
+    private _renderer: Renderer2,
+    private _elementRef: ElementRef,
+    private animationBuilder: AnimationBuilder,
+    public media: ObservableMedia,
+    private toolbarService: ToolbarService
+  ) {
+    navBarService.setNavBar(this);
 
-        this.matchMediaWatcher =
-            this.fuseMatchMedia.onMediaChange
-                .subscribe((mediaStep) => {
-                    setTimeout(() => {
+    this.navigationServiceWatcher =
+      this.fuseNavigationService.onNavCollapseToggle.subscribe(() => {
+        this.fusePerfectScrollbarUpdateTimeout = setTimeout(() => {
+          this.fusePerfectScrollbarDirective.update();
+        }, 310);
+      });
 
-                        if ( this.media.isActive('lt-lg') )
-                        {
-                            this.closeBar();
-                            this.deActivateFolded();
-                        }
-                        else
-                        {
-                            this.openBar();
-                            this._detachBackdrop();
-                        }
-                    });
-                });
+    this.matchMediaWatcher =
+      this.fuseMatchMedia.onMediaChange
+        .subscribe((mediaStep) => {
+          setTimeout(() => {
 
-        router.events.subscribe(
-            (event) => {
-                if ( event instanceof NavigationEnd )
-                {
-                    if ( this.media.isActive('lt-lg') )
-                    {
-                        setTimeout(() => {
-                            this.closeBar();
-                        });
-                    }
-                }
+            if (this.media.isActive('lt-lg')) {
+              this.closeBar();
+              this.deActivateFolded();
             }
-        );
-    }
-
-    ngOnInit()
-    {
-        this.isClosed = false;
-        this.isFoldedActive = this._folded;
-        this.isFoldedOpen = false;
-        this.initialized = false;
-        this.updateCssClasses();
-
-        setTimeout(() => {
-            this.initialized = true;
+            else {
+              this.openBar();
+              this._detachBackdrop();
+            }
+          });
         });
 
-        if ( this.media.isActive('lt-lg') )
-        {
-            this.closeBar();
-            this.deActivateFolded();
-        }
-        else
-        {
-            if ( !this._folded )
-            {
-                this.deActivateFolded();
-            }
-            else
-            {
-                this.activateFolded();
-            }
-        }
-    }
-
-    ngOnDestroy()
-    {
-        clearTimeout(this.fusePerfectScrollbarUpdateTimeout);
-        this.matchMediaWatcher.unsubscribe();
-        this.navigationServiceWatcher.unsubscribe();
-    }
-
-    openBar()
-    {
-        if ( !this.isClosed )
-        {
-            return;
-        }
-
-        this.isClosed = false;
-        this.updateCssClasses();
-        if ( this.media.isActive('lt-lg') )
-        {
-            this._attachBackdrop();
-        }
-    }
-
-    closeBar()
-    {
-        if ( this.isClosed )
-        {
-            return;
-        }
-
-        this.isClosed = true;
-        this.updateCssClasses();
-        this._detachBackdrop();
-    }
-
-    toggleBar()
-    {
-        if ( this.isClosed )
-        {
-            this.openBar();
-        }
-        else
-        {
-            this.closeBar();
-        }
-    }
-
-    toggleFold()
-    {
-        if ( !this.isFoldedActive )
-        {
-            this.activateFolded();
-        }
-        else
-        {
-            this.deActivateFolded();
-        }
-    }
-
-    activateFolded()
-    {
-        this.isFoldedActive = true;
-        this.fuseMainComponent.addClass('fuse-nav-bar-folded');
-        this.isFoldedOpen = false;
-    }
-
-    deActivateFolded()
-    {
-        this.isFoldedActive = false;
-        this.fuseMainComponent.removeClass('fuse-nav-bar-folded');
-        this.isFoldedOpen = false;
-    }
-
-    @HostListener('mouseenter')
-    onMouseEnter()
-    {
-        this.isFoldedOpen = true;
-    }
-
-    @HostListener('mouseleave')
-    onMouseLeave()
-    {
-        this.isFoldedOpen = false;
-    }
-
-    updateCssClasses()
-    {
-        if ( !this.isClosed )
-        {
-            this.fuseMainComponent.addClass('fuse-navbar-opened');
-            this.fuseMainComponent.removeClass('fuse-navbar-closed');
-        }
-        else
-        {
-            this.fuseMainComponent.addClass('fuse-navbar-closed');
-            this.fuseMainComponent.removeClass('fuse-navbar-opened');
-        }
-    }
-
-    private _attachBackdrop()
-    {
-        this._backdropElement = this._renderer.createElement('div');
-        this._backdropElement.classList.add('fuse-navbar-backdrop');
-
-        this._renderer.appendChild(this._elementRef.nativeElement.parentElement, this._backdropElement);
-
-        this.player =
-            this.animationBuilder
-                .build([
-                    animate('400ms ease', style({opacity: 1}))
-                ]).create(this._backdropElement);
-
-        this.player.play();
-
-        this._backdropElement.addEventListener('click', () => {
-                this.closeBar();
-            }
-        );
-    }
-
-    private _detachBackdrop()
-    {
-        if ( this._backdropElement )
-        {
-            this.player =
-                this.animationBuilder
-                    .build([
-                        animate('400ms cubic-bezier(.25,.8,.25,1)', style({opacity: 0}))
-                    ]).create(this._backdropElement);
-
-            this.player.play();
-
-            this.player.onDone(() => {
-                if ( this._backdropElement )
-                {
-                    this._backdropElement.parentNode.removeChild(this._backdropElement);
-                    this._backdropElement = null;
-                }
+    router.events.subscribe(
+      (event) => {
+        if (event instanceof NavigationEnd) {
+          if (this.media.isActive('lt-lg')) {
+            setTimeout(() => {
+              this.closeBar();
             });
+          }
         }
+      }
+    );
+  }
+
+  ngOnInit() {
+    this.isClosed = false;
+    this.isFoldedActive = this._folded;
+    this.isFoldedOpen = false;
+    this.initialized = false;
+    this.updateCssClasses();
+    this.toolbarService.onSelectedBusiness$.pipe(
+      debounceTime(500),
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(businessUnit => {
+      if (businessUnit && businessUnit.attributes.length > 0) {
+        const attrs = (businessUnit.attributes as any);
+        this.selectedBusinessIcon = ((attrs.find(s => s.key === 'logo_url') || {}).value || './assets/images/logos/logo-trik.png');
+      } else {
+        this.selectedBusinessIcon = './assets/images/logos/logo-trik.png';
+      }
+    });
+    setTimeout(() => {
+      this.initialized = true;
+    });
+
+    if (this.media.isActive('lt-lg')) {
+      this.closeBar();
+      this.deActivateFolded();
     }
+    else {
+      if (!this._folded) {
+        this.deActivateFolded();
+      }
+      else {
+        this.activateFolded();
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    clearTimeout(this.fusePerfectScrollbarUpdateTimeout);
+    this.matchMediaWatcher.unsubscribe();
+    this.navigationServiceWatcher.unsubscribe();
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
+
+  openBar() {
+    if (!this.isClosed) {
+      return;
+    }
+
+    this.isClosed = false;
+    this.updateCssClasses();
+    if (this.media.isActive('lt-lg')) {
+      this._attachBackdrop();
+    }
+  }
+
+  closeBar() {
+    if (this.isClosed) {
+      return;
+    }
+
+    this.isClosed = true;
+    this.updateCssClasses();
+    this._detachBackdrop();
+  }
+
+  toggleBar() {
+    if (this.isClosed) {
+      this.openBar();
+    }
+    else {
+      this.closeBar();
+    }
+  }
+
+  toggleFold() {
+    if (!this.isFoldedActive) {
+      this.activateFolded();
+    }
+    else {
+      this.deActivateFolded();
+    }
+  }
+
+  activateFolded() {
+    this.isFoldedActive = true;
+    this.fuseMainComponent.addClass('fuse-nav-bar-folded');
+    this.isFoldedOpen = false;
+  }
+
+  deActivateFolded() {
+    this.isFoldedActive = false;
+    this.fuseMainComponent.removeClass('fuse-nav-bar-folded');
+    this.isFoldedOpen = false;
+  }
+
+  @HostListener('mouseenter')
+  onMouseEnter() {
+    this.isFoldedOpen = true;
+  }
+
+  @HostListener('mouseleave')
+  onMouseLeave() {
+    this.isFoldedOpen = false;
+  }
+
+  updateCssClasses() {
+    if (!this.isClosed) {
+      this.fuseMainComponent.addClass('fuse-navbar-opened');
+      this.fuseMainComponent.removeClass('fuse-navbar-closed');
+    }
+    else {
+      this.fuseMainComponent.addClass('fuse-navbar-closed');
+      this.fuseMainComponent.removeClass('fuse-navbar-opened');
+    }
+  }
+
+  private _attachBackdrop() {
+    this._backdropElement = this._renderer.createElement('div');
+    this._backdropElement.classList.add('fuse-navbar-backdrop');
+
+    this._renderer.appendChild(this._elementRef.nativeElement.parentElement, this._backdropElement);
+
+    this.player =
+      this.animationBuilder
+        .build([
+          animate('400ms ease', style({ opacity: 1 }))
+        ]).create(this._backdropElement);
+
+    this.player.play();
+
+    this._backdropElement.addEventListener('click', () => {
+      this.closeBar();
+    }
+    );
+  }
+
+  private _detachBackdrop() {
+    if (this._backdropElement) {
+      this.player =
+        this.animationBuilder
+          .build([
+            animate('400ms cubic-bezier(.25,.8,.25,1)', style({ opacity: 0 }))
+          ]).create(this._backdropElement);
+
+      this.player.play();
+
+      this.player.onDone(() => {
+        if (this._backdropElement) {
+          this._backdropElement.parentNode.removeChild(this._backdropElement);
+          this._backdropElement = null;
+        }
+      });
+    }
+  }
 }
