@@ -27,6 +27,7 @@ export class FuseContentComponent implements OnInit, OnDestroy {
         private activatedRoute: ActivatedRoute,
         private fuseConfig: FuseConfigService
     ) {
+
         this.router.events
             .filter((event) => event instanceof NavigationEnd)
             .map(() => this.activatedRoute)
