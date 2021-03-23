@@ -20,6 +20,9 @@ metadata:
   name: frontend-emi
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      run: frontend-emi  
   template:
     metadata:
       labels:
@@ -27,7 +30,7 @@ spec:
     spec:
       containers:
       - name: frontend-emi
-        image: DOCKERHUB/emi:1.1.15
+        image: DOCKERHUB/emi:1.1.16
         resources:
           requests:
             cpu: "10m"

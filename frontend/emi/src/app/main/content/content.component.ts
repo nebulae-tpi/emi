@@ -5,7 +5,7 @@ import { FuseConfigService } from '../../core/services/config.service';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
-
+ 
 @Component({
     selector: 'fuse-content',
     templateUrl: './content.component.html',
