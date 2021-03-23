@@ -14,7 +14,7 @@ spec:
   selector:
     run: frontend-emi
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend-emi
@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: frontend-emi
-        image: DOCKERHUB/emi:1.1.14
+        image: DOCKERHUB/emi:1.1.15
         resources:
           requests:
             cpu: "10m"
