@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: frontend-emi
-        image: DOCKERHUB/emi:1.1.19
+        image: DOCKERHUB/emi:1.1.40
         resources:
           requests:
             cpu: "10m"

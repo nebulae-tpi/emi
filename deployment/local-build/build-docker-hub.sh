@@ -1,7 +1,7 @@
 #!/bin/bash
 source docker_hub_secrets.sh
 export DOCKERHUB_IMAGE=emi
-export DOCKERHUB_TAG=1.1.19
+export DOCKERHUB_TAG=1.1.40
 export DOCKERHUB_NAMESPACE=nebulaetpiprod
 export DOCKERHUB_IMAGE=emi
 
