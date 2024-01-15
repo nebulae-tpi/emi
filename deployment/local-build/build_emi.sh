@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "===== Installing NebulaE CLI ======"
-npm install -g @nebulae/cli
+# echo "===== Installing NebulaE CLI ======"
+# npm install -g @nebulae/cli
 npm install -g @angular/cli@7.2.1
 
 
