@@ -1,0 +1,80 @@
+.table-container {
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+.mat-cell {
+  color: black;
+  font-size: 0.9em;
+}
+
+.mat-header-row {
+  height: 2em;
+}
+
+.mat-row {
+  height: 28px;
+  min-width: 28px;
+  max-width: 28px;
+}
+
+
+
+.services-table {
+
+  .item {
+      position: relative;
+      cursor: pointer;
+  }
+
+}
+
+
+.mat-row-selected {
+  background: silver;
+}
+
+.td-container {
+  position: relative;
+}
+.td-content {
+  position: absolute;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.td-spacer {
+  height: 0;
+  overflow: hidden;
+}
+.bg-red{
+  background: #FFCECE;
+}
+.bg-yellow{
+  background: #FFFBCC; 
+}
+.bg-green{
+  background: #D5FFCE;  
+}
+.bg-white{
+  background: #FFFFFF;
+}
+.font-black{
+  color: #000000;
+}
+.font-yellow{
+  color: #FFCE14;
+}
+.font-red{
+  color: #BF0025;
+}
+.font-white{
+  color: #FFFFFF;
+}
+.font-bold{
+  font-weight: bold;
+}

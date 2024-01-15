@@ -1,0 +1,18 @@
+@import 'src/app/core/scss/fuse';
+
+
+.content-scroll{
+    overflow: auto !important;
+}
+
+.text-wrap{
+    white-space: normal;
+    line-height: normal;
+}
+
+@media(max-width: 768px){
+    .content-roles{
+        padding: 0 !important;
+        margin: 0;
+    }
+}

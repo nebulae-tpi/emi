@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # echo "===== Installing NebulaE CLI ======"
-# npm install -g @nebulae/cli
-npm install -g @angular/cli@7.2.1
+npm install -g @nebulae/cli
+npm install -g @angular/cli@6
 
 
 echo "===== Composing EMI UI for Production ======"

@@ -1,0 +1,172 @@
+<div id="sample" class="page-layout carded left-sidenav" fusePerfectScrollbar>
+
+  <div *ngIf="!businessIdSelected" class="selectBusinessUnit">
+    Selecciona por favor una unidad de Negocio
+  </div>
+  <div [ngClass]="{ 'hide-element': !businessIdSelected }" class="caja-sample" flexLayout="column">
+
+
+    <div class="filterk">
+      <div class="cabe">
+        <!--filtro por dias-->
+        <div class="selec" [formGroup]="secondaryFilterForm">
+          <div class="pag-rec">
+            <mat-form-field>
+              <mat-label>1: Pagos o Recargas</mat-label>
+              <mat-select formControlName="type">
+                <mat-option value="SUBSCRIPTION_PAYMENT">Pago de Subscripción</mat-option>
+                <mat-option value="WALLET_RECHARGES">Recarga de billetera</mat-option>
+                <mat-option value="PAY_PER_SERVICE">Pagos por Servicio</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <div class="formD">
+          <button mat-raised-button (click)="openDateSelectorDialog()">Selecciona los días</button>
+          <!-- <button mat-raised-button (click)="openWeekSelectorDialog()">Selecciona el mes</button> -->
+        </div>
+
+        <!--filtros por mes-->
+      </div>
+
+    </div>
+
+    <div class="informacion">
+
+      <div class="cuer">
+        <!--fecha seleccionada-->
+        <div class="title">
+          {{ minDateAsString }} - {{ maxDateAsString }}
+        </div>
+        <!--informacion por días-->
+        <div class="info">
+          <div class="infoDias">
+
+            <p>
+              Información por días
+            </p>
+            <div class="tabla1">
+              <table class="simple">
+                <thead>
+                  <tr>
+                    <th>Día</th>
+                    <th *ngIf="secondaryFilterForm.controls['type'].value == 'SUBSCRIPTION_PAYMENT'">Total Días</th>
+                    <th *ngIf="secondaryFilterForm.controls['type'].value == 'WALLET_RECHARGES'">Total Recargas</th>
+                    <th *ngIf="secondaryFilterForm.controls['type'].value == 'PAY_PER_SERVICE'">Total Servicios pagos
+                    </th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let daySummaryItem of summaryPerDayOnPage">
+                    <td>
+                      <p>Día</p>
+                      {{ daySummaryItem.date }}
+                    </td>
+                    <td>
+                      <p *ngIf="secondaryFilterForm.controls['type'].value == 'SUBSCRIPTION_PAYMENT'"> Total Días </p>
+                      <p *ngIf="secondaryFilterForm.controls['type'].value == 'WALLET_RECHARGES'"> Total Recargas </p>
+                      <p *ngIf="secondaryFilterForm.controls['type'].value == 'PAY_PER_SERVICE'">Total Servicios pagos
+                      </p>
+                      {{ daySummaryItem.count }}
+                    </td>
+                    <td>
+                      <p>Total</p>
+                      {{ daySummaryItem.totalCash | currency:'' :'symbol':'4.0-0' }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <mat-paginator #paginator [length]="tableLength" [pageIndex]="tablePageIndex" [pageSize]="tablePageSize"
+                [pageSizeOptions]="tablePageSizeOptions">
+              </mat-paginator>
+            </div>
+          </div>
+
+          <!--informacion de los totales tanto de
+            los días como el dinero conseguido-->
+          <div class="totl">
+            <p>
+              Totales
+            </p>
+            <div class="tabla1">
+              <table class="simple">
+                <thead>
+                  <tr>
+                    <th *ngIf="secondaryFilterForm.controls['type'].value == 'SUBSCRIPTION_PAYMENT'"> Total Días </th>
+                    <th *ngIf="secondaryFilterForm.controls['type'].value == 'WALLET_RECHARGES'"> Total Recargas </th>
+                    <th *ngIf="secondaryFilterForm.controls['type'].value == 'PAY_PER_SERVICE'">Total Servicios pagos
+                    </th>
+                    <th>Dinero total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <p *ngIf="secondaryFilterForm.controls['type'].value == 'SUBSCRIPTION_PAYMENT'"> Total Días </p>
+                      <p *ngIf="secondaryFilterForm.controls['type'].value == 'WALLET_RECHARGES'"> Total Decargas </p>
+                      <p *ngIf="secondaryFilterForm.controls['type'].value == 'PAY_PER_SERVICE'">Total Servicios pagos
+                      </p>
+                      {{ totalDays }}
+                    </td>
+                    <td>
+                      <p> Dinero total </p>
+                      ${{ totalAmount | number }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+
+        </div>
+
+        <div class="gafri">
+          <!--grafica de los días seleccionados-->
+          <p> Representación días seleccionados </p>
+          <div class="sample-grafi" style="display: block">
+            <canvas baseChart id="grafi1" chart-click="onClick" [datasets]="barChartData" [labels]="barChartLabels"
+              [colors]="barChartColors" [options]="barChartOptions" [legend]="barChartLegend" [chartType]="barChartType"
+              #grafi1>
+            </canvas>
+          </div>
+
+          <!--las personas que vendieron en estos días y
+            cuanto en los días como en el valor total-->
+          <p *ngIf="secondaryFilterForm.controls['type'].value !== 'PAY_PER_SERVICE'">Personas</p>
+          <div class="personasP" *ngIf="secondaryFilterForm.controls['type'].value !== 'PAY_PER_SERVICE'">
+            <div class="personas">
+              <div *ngFor="let userPair of usersSummaryPair" class="per1">
+                <div class="nombre">
+                  {{userPair.username}}
+                </div>
+                <div class="ven">
+                  <p>{{ userPair.days }}</p>
+                  <span>{{userPair.value | currency:'' :'symbol':'4.0-0' }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="personas">
+              <div *ngFor="let userOdd of usersSummaryOdd" class="per1">
+                <div class="nombre">
+                  {{userOdd.username}}
+                </div>
+                <div class="ven">
+                  <p>{{ userOdd.days }}</p>
+                  <span>{{userOdd.value | currency:'' :'symbol':'4.0-0' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

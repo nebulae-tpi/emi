@@ -1,0 +1,85 @@
+<div class="content-card mat-white-bg" fxLayout="row wrap">
+
+  <div *ngIf="dataSource.data && dataSource.data.length == 0" style="font-size: 18px" fxFlex="100" fxLayoutAlign="space-around center" class="mr-12"
+    fxLayout="row wrap">
+    <p class="m-8"> {{ 'DRIVER.DETAILS.NO_HAVE_BLOCKS' | translate }} </p>
+    <button *ngIf="userRoles.includes('DISCIPLINARY-COMMITTEE') || userRoles.includes('PLATFORM-ADMIN') || userRoles.includes('BUSINESS-OWNER')" class="m-8" mat-raised-button (click)="createBlock()">
+      {{'DRIVER.CREATE_BLOCK' | translate}}
+    </button>
+  </div>
+
+  <div *ngIf="dataSource.data && dataSource.data.length > 0 && ( userRoles.includes('DISCIPLINARY-COMMITTEE') || userRoles.includes('PLATFORM-ADMIN') || userRoles.includes('BUSINESS-OWNER') ) "
+    fxLayoutAlign="end end" fxFlex="100">
+    <button class="m-8" mat-raised-button (click)="createBlock()">
+      {{'DRIVER.CREATE_BLOCK' | translate}}
+    </button>
+  </div>
+
+  <mat-table *ngIf="dataSource.data && dataSource.data.length > 0" fxFlex="100" id="entity-table" class="blocks-table" #table [dataSource]="dataSource" fusePerfectScrollbar>
+
+      <!-- BLOCK KEY COLUMN -->
+      <ng-container cdkColumnDef="key">
+          <mat-header-cell *cdkHeaderCellDef fxLayoutAlign="start center">{{ "DRIVER.BLOCKS.KEY" | translate }}
+          </mat-header-cell>
+          <mat-cell *cdkCellDef="let block">
+              <p> {{ 'DRIVER.DETAILS.BLOCK_TYPES.' + block.key | translate }}</p>
+          </mat-cell>
+      </ng-container>
+
+      <!-- BLOCK NOTES COLUMN -->
+      <!-- <ng-container cdkColumnDef="notes">
+          <mat-header-cell *cdkHeaderCellDef fxHide fxShow.gt-xs fxLayoutAlign="center center" >{{ "DRIVER.BLOCKS.NOTES" | translate }}
+          </mat-header-cell>
+          <mat-cell *cdkCellDef="let block" fxHide fxShow.gt-xs fxLayoutAlign="center center" >
+              <p> el bloqueo es palicado porque el conductor tuvo mal comportamiento con el cliente y con el portero-- el bloqueo es palicado porque el conductor tuvo mal comportamiento con el cliente y con el portero </p>
+          </mat-cell>
+      </ng-container> -->
+
+      <!-- START_TIME BLOCK COLUMN -->
+      <ng-container cdkColumnDef="startTime">
+          <mat-header-cell *cdkHeaderCellDef fxLayoutAlign="start center" fxHide fxShow.gt-xs>{{ "DRIVER.BLOCKS.START_TIME" | translate }}
+          </mat-header-cell>
+          <mat-cell *cdkCellDef="let block" fxHide fxShow.gt-xs>
+              <p > {{ block.startTime | date: "dd/MM/y HH:mm:ss"  }} </p>
+          </mat-cell>
+      </ng-container>
+
+      <!-- END_TIME BLOCK COLUMN -->
+      <ng-container cdkColumnDef="endTime">
+          <mat-header-cell *cdkHeaderCellDef fxLayoutAlign="start center">{{ "DRIVER.BLOCKS.END_TIME" | translate }}
+          </mat-header-cell>
+          <mat-cell *cdkCellDef="let block">
+              <p  *ngIf="block.endTime" class="pl-8"  > {{ block.endTime | date: "dd/MM/y HH:mm:ss" }} </p>
+              <p  *ngIf="!block.endTime" class="pl-8" > {{ 'undefined' | translate }} </p>
+          </mat-cell>
+      </ng-container>
+
+      <!-- RESPONSIBLE USER COLUMN -->
+      <ng-container cdkColumnDef="user">
+          <mat-header-cell *cdkHeaderCellDef fxHide fxLayoutAlign="start center" fxShow.gt-sm>
+            {{ "DRIVER.BLOCKS.USER" | translate }}
+          </mat-header-cell>
+          <mat-cell *cdkCellDef="let block" fxHide fxShow.gt-sm>
+              <p>{{ block.user }}</p>
+          </mat-cell>
+      </ng-container>
+
+       <!-- REMOVE BLOCK COLUMN -->
+       <ng-container cdkColumnDef="actions">
+            <mat-header-cell *cdkHeaderCellDef fxFlex="23" fxFlex.gt-xs="15" fxLayoutAlign="center center" >{{ "DRIVER.BLOCKS.ACTIONS" | translate }}
+            </mat-header-cell>
+            <mat-cell *cdkCellDef="let block" fxLayoutAlign="center center" (click)="$event.stopPropagation()" fxFlex="23" fxFlex.gt-xs="15">
+              <button mat-icon-button (click)="removeBlock(block)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-cell>
+        </ng-container>
+
+      <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+
+      <mat-row *cdkRowDef="let row; columns: displayedColumns" (click)="showBlockInfo(row)" class="item" matRipple>
+      </mat-row>
+  </mat-table>
+  <!-- <mat-paginator *ngIf="dataSource.data && dataSource.data.length > 0" fxFlex="100" #paginator [length]="tableSize" [pageIndex]="tablePage" [pageSize]="tableCount" [pageSizeOptions]="[5, 10, 25, 100]">
+  </mat-paginator> -->
+</div>
