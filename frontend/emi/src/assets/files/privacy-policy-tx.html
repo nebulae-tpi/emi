@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incrustar PDF con PDF.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <style>
+        .pdf-page {
+            border: 1px solid black;
+            margin-bottom: 10px;
+            width: 100%;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="pdf-container"></div>
+
+    <script>
+         document.addEventListener("DOMContentLoaded", function() {
+            const url = 'politicas_TX_PLUS.pdf'; // Asegúrate de que esta ruta sea correcta y accesible
+
+            // Asignar el worker de PDF.js
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
+
+            // Cargar el documento PDF
+            pdfjsLib.getDocument(url).promise.then(pdfDoc => {
+                console.log("PDF cargado");
+
+                const pdfContainer = document.getElementById('pdf-container');
+
+                // Iterar sobre todas las páginas del documento
+                for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+                    // Crear una función anónima para capturar el valor de pageNum
+                    (function(pageNum) {
+                        pdfDoc.getPage(pageNum).then(page => {
+                            console.log(`Página ${pageNum} cargada`);
+
+                            const scale = 1.5;
+                            const viewport = page.getViewport({ scale });
+
+                            // Crear el canvas para la página actual
+                            const canvas = document.createElement('canvas');
+                            canvas.className = 'pdf-page';
+                            const context = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+                            pdfContainer.appendChild(canvas);
+
+                            // Renderizar la página
+                            const renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            page.render(renderContext).promise.then(() => {
+                                console.log(`Página ${pageNum} renderizada`);
+                            });
+                        });
+                    })(pageNum);
+                }
+            }).catch(error => {
+                console.error("Error al cargar el PDF: ", error);
+                // Detalles adicionales del error
+                console.error("Detalles del error: ", error.details);
+            });
+        });
+        </script>
+</body>
+</html>
